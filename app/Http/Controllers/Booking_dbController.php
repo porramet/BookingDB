@@ -10,12 +10,13 @@ class Booking_dbController extends Controller
     public function index(Request $request)
     {
         // Fetch bookings and pass to view
-        $bookings = Booking::with(['user', 'room', 'status'])->get(); // Fetch related user, room, and status data
+        $bookings = Booking::with(['user', 'room', 'status'])->paginate(10); // Fetch related user, room, and status data with pagination
         $totalBookings = $bookings->count();
-        $pendingApprovals = $bookings->where('status_id', 'pending')->count();
+        $pendingBookings = $bookings->where('status_id', 'pending')->count();
+        $confirmedBookings = $bookings->where('status_id', 'approved')->count();
         $approvedBookings = $bookings->where('status_id', 'approved')->count();
 
-        return view('dashboard.booking_db', compact('bookings', 'totalBookings', 'pendingApprovals', 'approvedBookings'));
+        return view('dashboard.booking_db', compact('bookings', 'totalBookings', 'pendingBookings', 'confirmedBookings', 'approvedBookings'));
     }
 
     public function approve($id)

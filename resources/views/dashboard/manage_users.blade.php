@@ -14,12 +14,6 @@
                     <i class="fas fa-search"></i>
                 </button>
             </form>
-
-          <button class="icon-btn">
-           <i class="fas fa-bell">
-           </i>
-          </button>
-          <img alt="Profile image" class="profile-img" src="https://placehold.co/40x40"/>
          </div>
         </div>
         <div class="row mb-4">
@@ -126,169 +120,224 @@
 </div>
 @endsection
 <style>
-    /* Layout */
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f8f9fa;
-    }
-    
-    .sidebar {
-        background-color: #fff;
-        height: 100vh;
-        padding: 20px;
-        border-right: 1px solid #e0e0e0;
-    }
-    
-    .content {
-        padding: 20px;
-    }
-    
-    /* Cards */
-    .card {
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    .card-header {
-        background-color: #fff;
-        border-bottom: none;
-    }
-    
-    .card-body {
-        padding: 20px;
-    }
-    
-    .card-footer {
-        background-color: #fff;
-        border-top: none;
-    }
-    
-    .card-blue {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-        color: #fff;
-    }
-    
-    /* Navigation */
-    .sidebar .nav-link {
-        color: #6c757d;
-        font-weight: 500;
-        margin-bottom: 10px;
-    }
-    
-    .sidebar .nav-link.active {
-        color: #007bff;
-        background-color: #e9ecef;
-        border-radius: 5px;
-    }
-    
-    /* User Interface Elements */
-    .profile-img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-    }
-    
-    .search-bar {
-        background-color: #f1f3f4;
-        border: none;
-        border-radius: 20px;
-        padding: 10px 20px;
-        width: 100%;
-    }
-    
-    .search-bar:focus {
-        outline: none;
-        box-shadow: none;
-    }
-    
-    .icon-btn {
-        background-color: #f1f3f4;
-        border: none;
-        border-radius: 50%;
-        padding: 10px;
-        margin-left: 10px;
-    }
-    
-    .icon-btn i {
-        color: #6c757d;
-    }
-    
-    /* Statistics Cards */
+   /* Main Layout Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f5f7;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.content {
+    margin: 0 auto;
+}
+
+/* Header Styles */
+h2 {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Search Bar */
+.search-bar {
+    border: none;
+    background-color: #fff;
+    border-radius: 30px;
+    padding: 10px 15px;
+    width: 200px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-right: 10px;
+}
+
+.icon-btn {
+    background-color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.icon-btn:hover {
+    background-color: #f8f8f8;
+}
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-left: 15px;
+    object-fit: cover;
+}
+
+/* Stat Cards */
+.stat-card {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+    height: 100px;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card .icon {
+    font-size: 24px;
+    background-color: #FFC107;
+    color: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    margin-right: 15px;
+}
+
+.stat-card .details h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    color: #333;
+}
+
+.stat-card .details p {
+    margin: 5px 0 0;
+    color: #777;
+    font-size: 14px;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 15px 20px;
+}
+
+.card-header h5 {
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Table Styles */
+.table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.table th {
+    font-weight: 600;
+    color: #555;
+    border-top: none;
+    border-bottom: 2px solid #eee;
+    padding: 12px 8px;
+    background-color: #f9f9f9;
+}
+
+.table td {
+    padding: 12px 8px;
+    vertical-align: middle;
+    border-top: 1px solid #eee;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 500;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.btn-success {
+    background-color: #FFC107;
+    border-color: #FFC107;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background-color: #e0a800;
+    border-color: #e0a800;
+}
+
+.btn-danger {
+    background-color: #F44336;
+    border-color: #F44336;
+}
+
+.btn-danger:hover {
+    background-color: #d32f2f;
+    border-color: #d32f2f;
+}
+
+/* Custom Style for Status */
+td:nth-child(8) {
+    font-weight: 600;
+}
+
+/* Custom Style for Different Status */
+td:nth-child(8):contains('approved') {
+    color: #4CAF50;
+}
+
+td:nth-child(8):contains('pending') {
+    color: #FFC107;
+}
+
+td:nth-child(8):contains('rejected') {
+    color: #F44336;
+}
+
+/* Custom Style for Payment Status */
+td:nth-child(9) {
+    font-weight: 600;
+}
+
+td:nth-child(9):contains('paid') {
+    color: #4CAF50;
+}
+
+td:nth-child(9):contains('unpaid') {
+    color: #F44336;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
     .stat-card {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
     }
     
-    .stat-card .icon {
-        font-size: 40px;
-        color: #6c757d;
+    .table-responsive {
+        overflow-x: auto;
     }
-    
-    .stat-card .details {
-        text-align: right;
-    }
-    
-    .stat-card .details h3 {
-        margin: 0;
-        font-size: 24px;
-    }
-    
-    .stat-card .details p {
-        margin: 0;
-        color: #6c757d;
-    }
-    
-    /* Transactions */
-    .transaction-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 0;
-        border-bottom: 1px solid #e0e0e0;
-    }
-    
-    .transaction-item:last-child {
-        border-bottom: none;
-    }
-    
-    .transaction-item .icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 10px;
-    }
-    
-    .transaction-item .icon i {
-        font-size: 20px;
-    }
-    
-    .transaction-item .details {
-        flex-grow: 1;
-    }
-    
-    .transaction-item .amount {
-        font-weight: 500;
-    }
-    
-    .transaction-item .amount.negative {
-        color: #dc3545;
-    }
-    
-    .transaction-item .amount.positive {
-        color: #28a745;
-    }
-    
-    /* Charts */
-    .chart-container {
-        position: relative;
-        height: 200px;
-    }
+}
 </style>

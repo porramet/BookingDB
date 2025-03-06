@@ -228,3 +228,4 @@ function confirmDeleteBuilding(id) {
 </script>
 
 @endsection
+

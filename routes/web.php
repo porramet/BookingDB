@@ -62,7 +62,10 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     Route::get('/available-rooms', [BookingController::class, 'getAvailableRooms'])->name('available.rooms');
 Route::post('/create-booking', [BookingController::class, 'store'])->name('create.booking');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    //booking management
+    // Booking management
+    Route::get('/booking_db', [Booking_dbController::class, 'index'])->name('booking_db'); 
+    Route::delete('/booking_db/{id}', [Booking_dbController::class, 'destroy'])->name('booking_db.destroy');
+    Route::put('/booking_db/{id}', [Booking_dbController::class, 'update'])->name('booking_db.update');
     Route::get('/booking/{id}', [BookingController::class, 'show'])->name('booking.show');
 
     // Room management
