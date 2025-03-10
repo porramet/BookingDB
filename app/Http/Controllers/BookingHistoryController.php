@@ -65,4 +65,43 @@ class BookingHistoryController extends Controller
         
         return view('dashboard.booking_history', compact('bookingHistory'));
     }
+
+    /**
+ * แสดงประวัติการจองห้อง
+ */
+public function history(Request $request)
+{
+    // สร้าง query สำหรับประวัติการจอง
+    $query = DB::table('booking_histories')
+        ->leftJoin('status', 'booking_histories.status_id', '=', 'status.status_id')
+        ->leftJoin('users', 'booking_histories.user_id', '=', 'users.id')
+        ->select(
+            'booking_histories.*', 
+            'status.status_name', 
+            'users.name as user_name'
+        );
+
+    // Search functionality
+    if ($request->has('search')) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('booking_histories.id', 'like', "%{$search}%")
+              ->orWhere('booking_histories.external_name', 'like', "%{$search}%")
+              ->orWhere('users.name', 'like', "%{$search}%");
+        });
+    }
+    
+    // Calendar search - if date is selected in calendar
+    if ($request->has('booking_date')) {
+        $bookingDate = $request->booking_date;
+        $query->where(function($q) use ($bookingDate) {
+            $q->whereDate('booking_histories.booking_start', '<=', $bookingDate)
+              ->whereDate('booking_histories.booking_end', '>=', $bookingDate);
+        });
+    }
+
+    $bookingHistories = $query->paginate(10);
+    
+    return view('dashboard.booking_history', compact('bookingHistories'));
+}
 }

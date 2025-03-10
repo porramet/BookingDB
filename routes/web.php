@@ -71,7 +71,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 
     // สำหรับดูประวัติการจอง
     Route::get('/booking_history', [BookingHistoryController::class, 'index'])->name('booking.history');
-    
+    Route::get('/dashboard/booking_history', [App\Http\Controllers\Booking_dbController::class, 'history'])->name('booking_history');
     // Room management
     Route::get('/manage-rooms', [ManageRoomsController::class, 'index'])->name('manage_rooms.index');
     Route::get('/manage-rooms/{buildingId}/rooms', [ManageRoomsController::class, 'showRooms'])->name('manage_rooms.show');

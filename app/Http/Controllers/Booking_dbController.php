@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Status;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class Booking_dbController extends Controller
 {
@@ -43,6 +44,7 @@ class Booking_dbController extends Controller
         // Delete the original booking
         $booking->delete();
     }
+    
     public function index(Request $request)
     {
         // สร้าง query ที่ไม่เชื่อมโยงกับตาราง rooms และ buildings
@@ -55,6 +57,12 @@ class Booking_dbController extends Controller
                 'users.name as user_name'
             );
 
+        // ไม่แสดงรายการที่ดำเนินการเสร็จสิ้นแล้ว (status_id = 6)
+        $query->where('bookings.status_id', '!=', 6);
+        
+        // ตรวจสอบการจองที่สิ้นสุดวันแล้ว แต่ยังไม่ได้ทำเครื่องหมายว่าเสร็จสิ้น
+        $this->autoCompletePastBookings();
+
         // Search functionality
         if ($request->has('search')) {
             $search = $request->search;
@@ -62,6 +70,15 @@ class Booking_dbController extends Controller
                 $q->where('bookings.id', 'like', "%{$search}%")
                   ->orWhere('bookings.external_name', 'like', "%{$search}%")
                   ->orWhere('users.name', 'like', "%{$search}%");
+            });
+        }
+        
+        // Calendar search - if date is selected in calendar
+        if ($request->has('booking_date')) {
+            $bookingDate = $request->booking_date;
+            $query->where(function($q) use ($bookingDate) {
+                $q->whereDate('bookings.booking_start', '<=', $bookingDate)
+                  ->whereDate('bookings.booking_end', '>=', $bookingDate);
             });
         }
 
@@ -84,7 +101,8 @@ class Booking_dbController extends Controller
         $booking->status_id = $request->status_id;
         $booking->save();
 
-        if ($request->status_id == 'completed') {
+        // ถ้าสถานะเป็น "ดำเนินการเสร็จสิ้น" (status_id = 6) ให้ย้ายไปยังประวัติ
+        if ($request->status_id == 6) {
             $this->moveToHistory($id);
         }
 
@@ -93,5 +111,27 @@ class Booking_dbController extends Controller
             ->value('status_name');
             
         return redirect()->route('booking_db')->with('success', "การจองถูกเปลี่ยนสถานะเป็น{$statusName}เรียบร้อยแล้ว");
+    }
+    
+    /**
+     * ตรวจสอบและอัปเดตสถานะการจองที่สิ้นสุดไปแล้วโดยอัตโนมัติ
+     */
+    private function autoCompletePastBookings()
+    {
+        $now = Carbon::now();
+        
+        // ค้นหาการจองที่สิ้นสุดแล้วแต่ยังไม่ได้ทำเครื่องหมายว่าเสร็จสิ้น
+        $pastBookings = Booking::where('booking_end', '<', $now)
+            ->whereNotIn('status_id', [5, 6]) // ไม่รวมที่ยกเลิกหรือเสร็จสิ้นแล้ว
+            ->get();
+            
+        foreach ($pastBookings as $booking) {
+            // อัปเดตสถานะเป็น "ดำเนินการเสร็จสิ้น" (status_id = 6)
+            $booking->status_id = 6;
+            $booking->save();
+            
+            // ย้ายไปยังประวัติการจอง
+            $this->moveToHistory($booking->id);
+        }
     }
 }

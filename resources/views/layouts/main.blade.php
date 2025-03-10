@@ -23,7 +23,7 @@
         </button>
         <div class="row">
             <div class="col-md-2 sidebar">
-                <h4 class="mb-4">RoomBookingsApp</h4>
+                <img src="{{ asset('images/snru-logo.jpeg') }}" alt="SNru Logo" style="width: 100%; height: auto;">
                 <nav class="nav flex-column">
                     <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-home"></i> แดชบอร์ด</a>
                     <a class="nav-link" href="{{ route('booking_db') }}"><i class="fas fa-calendar-alt"></i> การจองห้อง</a>
@@ -155,7 +155,7 @@ h2 {
 .d-flex.align-items-center {
     display: flex;
     align-items: center;
-    height: 40px;
+    height: 70px;
     flex-wrap: wrap;
 }
 
