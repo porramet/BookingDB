@@ -363,7 +363,7 @@ td:nth-child(8):contains("rejected")::before {
 /* Payment Status Styling */
 td:nth-child(9) {
     font-weight: 600;
-    border-radius: 20px;
+    /*border-radius: 20px;*/
     padding: 5px 12px !important;
     text-align: center;
 }

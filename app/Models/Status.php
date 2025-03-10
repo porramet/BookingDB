@@ -13,4 +13,11 @@ class Status extends Model
     protected $primaryKey = 'status_id'; // กำหนดคีย์หลักให้ตรงกับฐานข้อมูล
 
     protected $fillable = ['status_name']; // ฟิลด์ที่สามารถเพิ่มข้อมูลได้
+
+    public $timestamps = false;
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'status_id', 'status_id');
+    }
 }

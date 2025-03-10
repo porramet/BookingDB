@@ -64,10 +64,14 @@ Route::post('/create-booking', [BookingController::class, 'store'])->name('creat
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Booking management
     Route::get('/booking_db', [Booking_dbController::class, 'index'])->name('booking_db'); 
-    Route::delete('/booking_db/{id}', [Booking_dbController::class, 'destroy'])->name('booking_db.destroy');
-    Route::put('/booking_db/{id}', [Booking_dbController::class, 'update'])->name('booking_db.update');
-    Route::get('/booking/{id}', [BookingController::class, 'show'])->name('booking.show');
+    //Route::delete('/booking_db/{id}', [Booking_dbController::class, 'destroy'])->name('booking_db.destroy');
+    //Route::put('/booking_db/{id}', [Booking_dbController::class, 'update'])->name('booking_db.update');
+    //Route::get('/booking/{id}', [BookingController::class, 'show'])->name('booking.show');
+    Route::patch('/booking/{id}/update-status', [Booking_dbController::class, 'updateStatus'])->name('booking.update-status');
 
+    // สำหรับดูประวัติการจอง
+    Route::get('/booking_history', [BookingHistoryController::class, 'index'])->name('booking.history');
+    
     // Room management
     Route::get('/manage-rooms', [ManageRoomsController::class, 'index'])->name('manage_rooms.index');
     Route::get('/manage-rooms/{buildingId}/rooms', [ManageRoomsController::class, 'showRooms'])->name('manage_rooms.show');

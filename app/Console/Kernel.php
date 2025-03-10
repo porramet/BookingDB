@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // ทำงานทุกวันเวลาเที่ยงคืน
+        $schedule->command('bookings:move-to-history')->dailyAt('00:00');
     }
 
     /**
@@ -29,4 +30,6 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
+    
 }

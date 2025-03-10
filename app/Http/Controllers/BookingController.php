@@ -148,7 +148,7 @@ class BookingController extends Controller
 
             $booking = new Booking();
             $booking->fill($validated);
-            $booking->status_id = 1;
+            $booking->status_id = 3;
             $booking->is_external = true;
             $booking->total_price = $totalPrice;
             if (auth()->check()) {
