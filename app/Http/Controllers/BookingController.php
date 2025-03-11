@@ -53,7 +53,7 @@ class BookingController extends Controller
             $period = new \DatePeriod(
                 new \DateTime($booking->booking_start),
                 new \DateInterval('P1D'),
-                (new \DateTime($booking->booking_end))->modify('+1 day')
+                (new \DateTime($booking->booking_end))->modify('-1 day')
             );
             
             $bookingInfo = "จองโดย: " . mb_substr($booking->external_name, 0, 1) . "xxx";
@@ -78,6 +78,7 @@ class BookingController extends Controller
         try {
             \Log::debug('Incoming booking request:', $request->all());
             
+            \Log::debug('Validating request data:', $request->all());
             $validated = $request->validate([
                 'room_id' => 'required|exists:rooms,room_id',
                 'building_id' => 'required|exists:buildings,id',
@@ -89,6 +90,7 @@ class BookingController extends Controller
                 'booking_start' => 'required|date|after:now',
                 'booking_end' => 'required|date|after:booking_start',
                 'reason' => 'nullable|string',
+                //'payment_slip' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048', // Validate payment slip
             ]);
 
             // ตรวจสอบว่าวันที่จองอยู่ในวันหยุดหรือไม่
@@ -153,6 +155,16 @@ class BookingController extends Controller
             $booking->total_price = $totalPrice;
             if (auth()->check()) {
                 $booking->user_id = auth()->id();
+            }
+            // Debugging: Log the files in the request
+            \Log::debug('Uploaded files:', $request->files->all());
+            
+            // Handle file upload
+            if ($request->hasFile('payment_slip')) {
+                \Log::debug('Payment slip file detected:', $file->getClientOriginalName());
+                $file = $request->file('payment_slip');
+                $filePath = $file->store('uploads', 'public'); // Store file in public/uploads
+                $booking->payment_slip = $filePath; // Save file path in the database
             }
             $booking->save();
 

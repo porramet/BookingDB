@@ -7,15 +7,15 @@
     <!-- ฟอร์มจองห้องพัก -->
     <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg">
         <h2 class="text-lg font-semibold mb-4">
-            ผู้เข้าพักคนหลัก <span class="text-red-600">*</span>
+            ข้อมูลผู้จอง <span class="text-red-600">*</span>
         </h2>
         
-        <form action="{{ route('booking.store') }}" method="POST" id="bookingForm">
+        <form action="{{ route('booking.store') }}" method="POST" id="bookingForm" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="room_id" value="{{ $room->room_id }}">
             <input type="hidden" name="building_id" value="{{ $room->building_id }}">
-            <input type="hidden" name="room_name" value="{{ $room->room_name }}"> <!-- ✅ เพิ่ม -->
-            <input type="hidden" name="building_name" value="{{ $room->building->building_name ?? 'ไม่ระบุ' }}"> <!-- ✅ เพิ่ม --> 
+            <input type="hidden" name="room_name" value="{{ $room->room_name }}">
+            <input type="hidden" name="building_name" value="{{ $room->building->building_name ?? 'ไม่ระบุ' }}">
             <input type="hidden" name="user_id" value="{{ auth()->id() }}">
             <!-- ชื่ออาคาร -->
             <div class="mb-4">
@@ -73,6 +73,7 @@
                 <button id="toggleCalendar" type="button" class="bg-blue-500 text-white px-4 py-2 rounded-lg">เลือกวันจอง</button>
                 <input type="hidden" name="booking_start" id="booking_start">
                 <input type="hidden" name="booking_end" id="booking_end">
+                
                 <!-- แสดงข้อมูลวันหยุด -->
                 <div class="mt-4 text-left">
                     <div class="text-sm font-medium text-gray-700 mb-2">หมายเหตุ:</div>
@@ -85,6 +86,27 @@
                         <span class="text-sm">วันที่มีการจองแล้ว (ไม่สามารถจองได้)</span>
                     </div>
                 </div>
+            </div>
+            
+            <!-- เวลาจอง -->
+            <div class="mt-4 bg-white p-4 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-2">เวลาจอง</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- เวลาเข้า (เริ่มต้น) -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">เวลาเข้า</label>
+                        <input type="time" name="check_in_time" id="check_in_time" value="08:00" 
+                               class="w-full border rounded-md p-2" readonly>
+                    </div>
+                    
+                    <!-- เวลาออก (สิ้นสุด) -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">เวลาออก</label>
+                        <input type="time" name="check_out_time" id="check_out_time" value="23:00" 
+                               class="w-full border rounded-md p-2" readonly>
+                    </div>
+                </div>
+                <p class="mt-2 text-sm text-gray-500">หมายเหตุ: เวลาจองเริ่มตั้งแต่ 8:00 น. ถึง 23:00 น. ของแต่ละวัน</p>
             </div>
             
             <!-- ปุ่มยืนยันการจอง -->
@@ -153,6 +175,16 @@
                 </div>
                 
                 <div class="flex justify-between">
+                    <span class="text-gray-700">เวลาเข้า:</span>
+                    <span>08:00 น.</span>
+                </div>
+                
+                <div class="flex justify-between">
+                    <span class="text-gray-700">เวลาออก:</span>
+                    <span>23:00 น.</span>
+                </div>
+                
+                <div class="flex justify-between">
                     <span class="text-gray-700">ค่าบริการทั้งหมด:</span>
                     <span id="serviceFee">0 บาท</span>
                 </div>
@@ -164,6 +196,39 @@
                     <span id="totalPrice">0 บาท</span>
                 </div>
                 
+                <!-- ตัวเลือกชำระผ่านธนาคาร -->
+                <div class="mt-4 flex items-center">
+                    <input type="checkbox" id="bankPaymentCheckbox" class="w-5 h-5 text-blue-500 border-gray-300 rounded focus:ring-blue-400">
+                    <label for="bankPaymentCheckbox" class="ml-2 text-gray-700">ชำระผ่านธนาคาร</label>
+                </div>
+
+                <!-- QR Code และข้อมูลบัญชีธนาคาร -->
+                <div id="bankPaymentDetails" class="mt-4 text-center hidden">
+                    <h3 class="text-lg font-semibold mb-2">โอนเงินผ่านธนาคาร</h3>
+                    
+                    <!-- รูป QR Code -->
+                    <img src="{{ asset('images/apple-icon.png') }}" alt="QR Code ธนาคาร" class="w-40 h-40 mx-auto rounded-lg shadow-md">
+                    
+                    <!-- ข้อมูลบัญชีธนาคาร -->
+                    <p class="mt-2 text-gray-700">
+                        ชื่อบัญชี: <span class="font-semibold">บริษัท ABC จำกัด</span> <br>
+                        ธนาคาร: <span class="font-semibold">ไทยพาณิชย์</span> <br>
+                        เลขบัญชี: <span class="font-semibold">123-456-7890</span>
+                    </p>
+
+                    <!-- ปุ่มอัปโหลดสลิป -->
+                    <div class="mt-4">
+                        <label for="paymentSlip" class="cursor-pointer flex items-center justify-center bg-gray-100 border p-3 rounded-lg">
+                            <svg class="w-8 h-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <span class="ml-2 text-gray-600">อัปโหลดสลิป</span>
+                        </label>
+                        <input type="file" id="paymentSlip" name="payment_slip" class="hidden" accept="image/*">
+                        <div id="fileName" class="mt-2 text-sm text-gray-600">ยังไม่ได้เลือกไฟล์</div>
+                    </div>
+                </div>
+
                 <div class="mt-4 p-3 bg-blue-50 rounded-lg text-sm">
                     <p class="text-blue-800">
                         <span class="font-semibold">หมายเหตุ:</span> ราคาอาจมีการเปลี่ยนแปลงตามนโยบายและระยะเวลาที่จอง
@@ -221,11 +286,22 @@
         const bookingEnd = document.getElementById('booking_end');
         const checkInDate = document.getElementById('checkInDate');
         const checkOutDate = document.getElementById('checkOutDate');
+        const checkInTime = document.getElementById('check_in_time');
+        const checkOutTime = document.getElementById('check_out_time');
         const toggleButton = document.getElementById('toggleCalendar');
         const totalDays = document.getElementById('totalDays');
         const serviceFee = document.getElementById('serviceFee');
         const totalPrice = document.getElementById('totalPrice');
+        const bookingForm = document.getElementById('bookingForm');
+        const bankPaymentCheckbox = document.getElementById('bankPaymentCheckbox');
+        const bankPaymentDetails = document.getElementById('bankPaymentDetails');
+        const paymentSlip = document.getElementById('paymentSlip');
+        const fileName = document.getElementById('fileName');
     
+        // กำหนดค่าเริ่มต้นให้กับเวลา
+        checkInTime.value = "08:00";
+        checkOutTime.value = "23:00";
+        
         // ข้อมูลราคา
         const serviceRate = {{ $room->service_rates ?? 0 }};
     
@@ -255,21 +331,23 @@
             },
             setup: (picker) => {
                 picker.on('render', () => {
-                    // วันที่ถูกเลือกในปัจจุบัน
-                    const selectedStart = bookingStart.value ? new Date(bookingStart.value) : null;
-                    const selectedEnd = bookingEnd.value ? new Date(bookingEnd.value) : null;
+                    // ใช้การเปรียบเทียบโดยใช้วันที่แบบ string เพื่อหลีกเลี่ยงปัญหา timezone
+                    const selectedStart = bookingStart.value;
+                    const selectedEnd = bookingEnd.value;
     
                     document.querySelectorAll('.container__days .day-item').forEach(day => {
                         const date = day.getAttribute('data-time');
                         if (date) {
                             const dateObj = new Date(parseInt(date));
-                            const formattedDate = dateObj.toISOString().split('T')[0];
+                            const formattedDate = dateObj.toISOString().split('T')[0]; // รูปแบบ YYYY-MM-DD
     
                             // รีเซ็ตคลาสก่อน
                             day.classList.remove('is-selected');
     
-                            // ไฮไลต์ช่วงวันที่เลือก
-                            if (selectedStart && selectedEnd && dateObj >= selectedStart && dateObj <= selectedEnd) {
+                            // ไฮไลต์ช่วงวันที่เลือก - เปรียบเทียบวันที่แบบ string
+                            if (selectedStart && selectedEnd && 
+                                formattedDate >= selectedStart && 
+                                formattedDate <= selectedEnd) {
                                 day.classList.add('is-selected');
                             }
     
@@ -292,11 +370,13 @@
                         day.classList.remove('is-selected');
                     });
     
-                    // อัปเดตค่าฟอร์ม
+                    // อัปเดตค่าฟอร์ม (เฉพาะวันที่ ไม่รวมเวลา)
                     bookingStart.value = date1.format('YYYY-MM-DD');
                     bookingEnd.value = date2 ? date2.format('YYYY-MM-DD') : date1.format('YYYY-MM-DD');
-                    checkInDate.innerText = date1.format('D MMM YYYY');
-                    checkOutDate.innerText = date2 ? date2.format('D MMM YYYY') : date1.format('D MMM YYYY');
+                    
+                    // แสดงวันที่พร้อมเวลาเข้า-ออก
+                    checkInDate.innerText = date1.format('D MMM YYYY') + ' (08:00 น.)';
+                    checkOutDate.innerText = (date2 ? date2.format('D MMM YYYY') : date1.format('D MMM YYYY')) + ' (23:00 น.)';
     
                     // คำนวณจำนวนวัน
                     let days = 1;
@@ -318,22 +398,53 @@
             }
         });
     
+        // เมื่อกดปุ่มยืนยันการจอง
+        bookingForm.addEventListener('submit', function(e) {
+            // ถ้ามีการเลือกวันที่จอง
+            if (bookingStart.value && bookingEnd.value) {
+                // เพิ่มเวลาเข้ากับวันที่
+                const startDateTime = `${bookingStart.value}T${checkInTime.value}:00`;
+                const endDateTime = `${bookingEnd.value}T${checkOutTime.value}:00`;
+                
+                // อัปเดตค่าในฟอร์ม
+                bookingStart.value = startDateTime;
+                bookingEnd.value = endDateTime;
+            } else {
+                // ถ้ายังไม่ได้เลือกวันที่
+                e.preventDefault();
+                alert('กรุณาเลือกวันที่จอง');
+            }
+        });
+    
         // โหลดค่าจาก input ถ้ามี
         if (bookingStart.value && bookingEnd.value) {
-    // แปลงวันที่ให้เป็น local time เพื่อแก้ปัญหา timezone
-    let startDate = new Date(bookingStart.value + 'T00:00:00');
-    let endDate = new Date(bookingEnd.value + 'T23:59:59');
-
-    // ตรวจสอบให้แน่ใจว่า Litepicker ได้รับค่าที่ถูกต้อง
-    console.log("Setting date range:", startDate.toISOString(), endDate.toISOString());
-
-    picker.setDateRange(startDate, endDate);
-    picker.render();
-}
-
+            // แปลงวันที่ให้เป็น local time เพื่อแก้ปัญหา timezone
+            let startParts = bookingStart.value.split('T')[0]; // ดึงเฉพาะส่วนวันที่ YYYY-MM-DD
+            let endParts = bookingEnd.value.split('T')[0];     // ดึงเฉพาะส่วนวันที่ YYYY-MM-DD
+            
+            let startDate = new Date(startParts + 'T00:00:00');
+            let endDate = new Date(endParts + 'T00:00:00');
+    
+            picker.setDateRange(startDate, endDate);
+            picker.render();
+        }
     
         toggleButton.addEventListener('click', function() {
             picker.show();
+        });
+    
+        // เมื่อเลือก "ชำระผ่านธนาคาร"
+        bankPaymentCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                bankPaymentDetails.classList.remove('hidden'); // แสดง QR Code + อัปโหลดสลิป
+            } else {
+                bankPaymentDetails.classList.add('hidden'); // ซ่อนทั้งหมด
+            }
+        });
+    
+        // แสดงชื่อไฟล์ที่เลือก
+        paymentSlip.addEventListener('change', function() {
+            fileName.innerText = this.files[0] ? this.files[0].name : "ยังไม่ได้เลือกไฟล์";
         });
     
         // ฟังก์ชันแปลงตัวเลขเป็นรูปแบบมีจุลภาค
@@ -341,6 +452,6 @@
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
     });
-    </script>
+</script>
     
 @endsection

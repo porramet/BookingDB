@@ -41,7 +41,7 @@
                 </div>
             @endforeach
 
-                <!-- End of Building Section -->
+                
 
                 @foreach($rooms as $room)
                     <div class="bg-white rounded-lg shadow-md overflow-hidden relative flex flex-col hidden rooms" id="{{ $room->building_id }}">

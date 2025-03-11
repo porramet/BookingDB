@@ -55,6 +55,7 @@ class Booking extends Model
         'email',
         'status',
         'department',
+        'payment_slip',
         'attendees',
         'purpose'
 
