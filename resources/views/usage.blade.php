@@ -3,7 +3,6 @@
 
 @section('content')
     <!-- How It Works Section -->
-    @include('hero')
   <section class="py-16">
    <div class="container mx-auto px-4">
     <div class="text-center mb-12">

@@ -2,7 +2,6 @@
 @extends('layouts.app')
 
 @section('content')
-    @include('hero3')
     <section class="py-16">
         <div class="container mx-auto">
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">ระบบจองห้องมหาวิทยาลัยราชภัฏสกลนคร</h1>
@@ -40,9 +39,6 @@
                     </div>
                 </div>
             @endforeach
-
-                
-
                 @foreach($rooms as $room)
                     <div class="bg-white rounded-lg shadow-md overflow-hidden relative flex flex-col hidden rooms" id="{{ $room->building_id }}">
                         <img alt="{{ $room->room_name }}" class="w-full h-48 object-cover" height="400" src="{{ file_exists(public_path($room->image)) ? asset($room->image) : asset('images/no-picture.jpg') }}" width="600"/>

@@ -1,8 +1,16 @@
-<!-- resources/views/how_to_use.blade.php -->
-<section class="py-16">
-<div class="container mx-auto px-4">
+<!-- resources/views/intro.blade.php -->
+@extends('layouts.app')
+
+@section('content')
+    <section class="py-16">
+        <div class="container mx-auto px-4">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-blue-600">คำแนะนำการใช้งาน</h2>
+                <h2 class="text-3xl font-bold text-blue-600">
+                    วิธีการใช้งาน
+                </h2>
+                <p class="mt-4 text-lg text-gray-600">
+                    เรียนรู้วิธีการใช้งานระบบจองห้องออนไลน์ของมหาวิทยาลัย
+                </p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                 <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
@@ -21,10 +29,6 @@
                     <p class="mt-2 text-gray-600">ยืนยันการจองและรับการยืนยัน</p>
                 </div>
             </div>
-            <div class="text-center mt-8">
-                <a class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition duration-300" href="{{ url('/usage') }}">เรียนรู้เพิ่มเติม</a>
-            </div>
         </div>
-    </div>
-</div>   
-</section>
+    </section>
+@endsection
