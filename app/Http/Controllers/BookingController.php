@@ -36,7 +36,7 @@ class BookingController extends Controller
     {
         $buildings = Building::with('rooms')->get();
         $rooms = Room::with('status')->get();
-        return view('booking', compact('buildings', 'rooms'));
+        return view('index', compact('buildings', 'rooms'));
     }
 
     public function showBookingForm($id)

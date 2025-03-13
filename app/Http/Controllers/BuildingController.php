@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Auth;
 
 class BuildingController extends Controller
 {
+    /**
+     * Display a listing of all buildings.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $buildings = Building::with('rooms')->get();

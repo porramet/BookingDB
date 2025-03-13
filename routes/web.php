@@ -17,7 +17,9 @@ use App\Http\Controllers\{
     BuildingController,
     CalendarController,
     BookingHistoryController,
+    RoomController,
     BookingController
+    
 };
 
 
@@ -26,7 +28,20 @@ use App\Http\Controllers\{
 Route::get('/', function () {
     return view('index');
 });
-Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
+// Home and booking routes
+Route::get('/', [BookingController::class, 'index']);
+Route::get('/booking', [BookingController::class, 'index']);
+Route::get('/booking/{id}', [BookingController::class, 'showBookingForm']);
+Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+
+// Room listing and filtering routes
+Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
+Route::get('/rooms/type/{type}', [RoomController::class, 'byType'])->name('rooms.byType');
+Route::get('/rooms/building/{building_id}', [RoomController::class, 'byBuilding'])->name('rooms.byBuilding');
+Route::get('/rooms/popular', [RoomController::class, 'popular'])->name('rooms.popular');
+
+// Building routes
+Route::get('/buildings', [BuildingController::class, 'index'])->name('buildings.index');
 Route::middleware(['auth'])->group(function () {
     Route::get('/booking/{room_id}', [BookingController::class, 'showBookingForm'])->name('booking.form');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
